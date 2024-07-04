@@ -66,11 +66,11 @@ export default async function DashboardPage() {
 
         {data?.Subscription?.status === "active" ? (
           <Button asChild>
-            <Link href="/dashboard/new">Create a new Note</Link>
+            <Link href="/dashboard/new">Create a new Note (for 30$)</Link>
           </Button>
         ) : (
           <Button asChild>
-            <Link href="/dashboard/billing">Create a new Note</Link>
+            <Link href="/dashboard/new">Create a new Note (for free)</Link>
           </Button>
         )}
       </div>
@@ -91,11 +91,11 @@ export default async function DashboardPage() {
 
           {data?.Subscription?.status === "active" ? (
             <Button asChild>
-              <Link href="/dashboard/new">Create a new Note</Link>
+              <Link href="/dashboard/new">Create a new Note (for 30$)</Link>
             </Button>
           ) : (
             <Button asChild>
-              <Link href="/dashboard/billing">Create a new Note</Link>
+              <Link href="/dashboard/new">Create a new Note (for free)</Link>
             </Button>
           )}
         </div>

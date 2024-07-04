@@ -13,41 +13,65 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import prisma from "@/app/lib/db";
 import { redirect } from "next/navigation";
-import { unstable_noStore as noStore } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 
-export default async function NewNoteRoute() {
+async function getData({ userId, noteId }: { userId: string; noteId: string }) {
+  noStore();
+  const data = await prisma.note.findUnique({
+    where: {
+      id: noteId,
+      userId: userId,
+    },
+    select: {
+      title: true,
+      description: true,
+      id: true,
+    },
+  });
+
+  return data;
+}
+
+export default async function DynamicRoute({
+  params,
+}: {
+  params: { id: string };
+}) {
   const user = await currentUser();
+  const data = await getData({ userId: user?.id as string, noteId: params.id });
 
   async function postData(formData: FormData) {
     "use server";
 
-    if (!user?.id) {
-      throw new Error("Not authorized");
-    }
+    if (!user?.id) throw new Error("you are not allowed");
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
 
-    await prisma.note.create({
+    await prisma.note.update({
+      where: {
+        id: data?.id,
+        userId: user.id,
+      },
       data: {
-        userId: user?.id,
         description: description,
         title: title,
       },
     });
 
+    revalidatePath("/dashboard");
+
     return redirect("/dashboard");
   }
-
   return (
     <Card>
       <form action={postData}>
         <CardHeader>
-          <CardTitle>New Note</CardTitle>
+          <CardTitle>Edit Note</CardTitle>
           <CardDescription>
-            Right here you can now create your new notes
+            Right here you can now edit your notes
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-y-5">
@@ -58,6 +82,7 @@ export default async function NewNoteRoute() {
               type="text"
               name="title"
               placeholder="Title for your note"
+              defaultValue={data?.title}
             />
           </div>
 
@@ -67,6 +92,7 @@ export default async function NewNoteRoute() {
               name="description"
               placeholder="Describe your note as you want"
               required
+              defaultValue={data?.description}
             />
           </div>
         </CardContent>
@@ -75,7 +101,7 @@ export default async function NewNoteRoute() {
           <Button asChild variant="destructive">
             <Link href="/dashboard">Cancel</Link>
           </Button>
-          <SubmitButton/>
+          <SubmitButton />
         </CardFooter>
       </form>
     </Card>
