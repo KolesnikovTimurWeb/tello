@@ -36,7 +36,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await currentUser();
-  const data = getData(user?.id)
+  const data = getData(user?.id as string)
   return (
     <html lang="en">
       <body className={`${inter.className} theme-blue`}>
