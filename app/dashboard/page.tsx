@@ -1,7 +1,7 @@
 "use client"
 import DashboardNav from '../components/DashboardNav'
 
-export default function Dashboard({children}:{children:React.ReactNode}) {
+export default async function Dashboard() {
 
    // if (!user) return router.push('/')
    return(
