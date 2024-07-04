@@ -6,6 +6,7 @@ import prisma from "@/app/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/ui/SubmitButton";
+import { revalidatePath } from "next/cache";
 
 async function getData(userId: string) {
    const data = await prisma.user.findUnique({
@@ -42,6 +43,8 @@ export default async function Settings() {
           colorScheme: colorScheme ?? undefined,
         },
       });
+
+      revalidatePath("/",'layout')
   
     }
    return(

@@ -3,6 +3,7 @@ import { auth, currentUser, getAuth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import prisma from "../lib/db";
 import DashboardNav from "../components/DashboardNav";
+import { stripe } from "../lib/stripe";
 
 async function getData({email,id,firstName,lastName,profileImage}:{
    email:string;
@@ -31,10 +32,30 @@ async function getData({email,id,firstName,lastName,profileImage}:{
           name: name,
         },
       });
+
+    }
+    
+    if (!user?.stripeCustomerId) {
+      const data = await stripe.customers.create({
+        email: email,
+      });
+  
+      await prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          stripeCustomerId: data.id,
+        },
+      });
     }
 }
 const DashboardLayout = async ({children}:{children:React.ReactNode}) => {
       const user = await currentUser()
+   if(!user) return redirect('/')
+      
+      
+
       await getData({
          email: user?.emailAddresses[0].emailAddress as string,
          firstName: user?.firstName as string,
@@ -42,7 +63,6 @@ const DashboardLayout = async ({children}:{children:React.ReactNode}) => {
          lastName: user?.username as string,
          profileImage: user?.imageUrl,
        });
-   if(!user) return redirect('/')
    return(
       <div className="flex flex-col space-y-6 mt-10">
       <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
