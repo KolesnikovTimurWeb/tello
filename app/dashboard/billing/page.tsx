@@ -8,18 +8,15 @@ import {
 import { CheckCircle2 } from "lucide-react";
 import prisma from "@/app/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { getStripeSession } from "@/app/lib/stripe";
+import { getStripeSession, stripe } from "@/app/lib/stripe";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { StripePortal, StripeSubscriptionCreationButton } from "@/components/ui/SubmitButton";
 
  
 const featureItems = [
-   { name: "Lorem Ipsum something" },
-   { name: "Lorem Ipsum something" },
-   { name: "Lorem Ipsum something" },
-   { name: "Lorem Ipsum something" },
-   { name: "Lorem Ipsum something" },
+   { name: "For support the creator" },
+
  ];
  async function getData(userId: string) {
    const data = await prisma.subscription.findUnique({
