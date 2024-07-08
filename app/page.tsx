@@ -20,7 +20,7 @@ export default async function Home() {
                 <h1 className="mt-8 text-3xl font-extrabold tracking-tight lg:text-6xl">Create Notes with Tello</h1>
 
                 <p className="max-w-xl mx-auto mt-8 text-base lg:text-xl text-secondary-foreground">
-                 Tello is a web-based project management application that uses boards, lists, and cards to help organize tasks and projects. Each board represents a project, with lists used to categorize stages of the project or different workstreams. Cards within lists represent individual tasks or items, which can be moved between lists to reflect progress.
+                 Tello is a web-based project management application that uses boards, lists, and cards to help organize tasks and projects. Each board represents a project, with lists used to categorize stages of the project or different workstreams.
                 </p>
               </div>
 
